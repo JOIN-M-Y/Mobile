@@ -31,8 +31,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.perspectivev3
 
 Runner/*.plist
-*.plist
-
 
 # Created by https://www.gitignore.io/api/swift,firebase
 # Edit at https://www.gitignore.io/?templates=swift,firebase
