@@ -15,23 +15,20 @@ class _JoinMainPageState extends State<JoinMainPage> {
           title: Text("Test"),
         ),
         body: Column(
-          children: <Widget>[
-            _builderGoogleAuth()
-          ],
+          children: <Widget>[_builderGoogleAuth()],
         ));
   }
 
   Widget _builderGoogleAuth() {
     return StreamBuilder(
       stream: googleAuthBloc.googleAccount,
-      builder: (BuildContext context,
-          AsyncSnapshot<GoogleSignInAccount> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<GoogleSignInAccount> snapshot) {
         if (!snapshot.hasData) {
           return Container(
             child: RaisedButton(
                 child: const Text("Sign in"),
-                onPressed: () => googleAuthBloc.sigInGoogle()
-            ),
+                onPressed: () => googleAuthBloc.sigInGoogle()),
           );
         } else {
           //Test
