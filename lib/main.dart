@@ -1,6 +1,7 @@
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:join/page/joinMainPage.dart';
+import 'package:join/page/notification.dart';
 
 import 'const/strings.dart';
 
@@ -16,7 +17,7 @@ class JoinApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreen.navigate(
         name: "images/join_splash.flr",
-        next: (context) => JoinMainPage(),
+        next: (context) => NotificationPage(),
         startAnimation: "intro",
         until: () => Future.delayed(Duration(seconds: 2)),
       ),
