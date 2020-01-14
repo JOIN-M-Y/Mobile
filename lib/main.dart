@@ -1,11 +1,21 @@
+import 'dart:io';
+
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:join/page/joinMainPage.dart';
-import 'package:join/page/notification.dart';
+import 'package:join/page/loginPage.dart';
 
 import 'const/strings.dart';
 
-void main() => runApp(JoinApp());
+void main() {
+  if (Platform.isIOS) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+    ));
+  }
+  runApp(JoinApp());
+}
 
 class JoinApp extends StatelessWidget {
   @override
@@ -17,7 +27,7 @@ class JoinApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreen.navigate(
         name: "images/join_splash.flr",
-        next: (context) => NotificationPage(),
+        next: (context) => LoginPage(),
         startAnimation: "intro",
         until: () => Future.delayed(Duration(seconds: 2)),
       ),
