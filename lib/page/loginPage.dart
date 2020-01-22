@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:join/const/strings.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -24,14 +25,14 @@ class _LoginPage extends State<LoginPage> {
               inputPasswordForm(),
               loginButton(),
               googleLoginButton(),
-              idPwFindORSignIn()
+              idPwFindORSignIn(context)
             ],
           )),
         ));
   }
 }
 
-Widget idPwFindORSignIn() {
+Widget idPwFindORSignIn(BuildContext context) {
   return Container(
     margin: EdgeInsets.only(top: 16),
     child: Row(
@@ -39,10 +40,13 @@ Widget idPwFindORSignIn() {
       children: <Widget>[
         Text("아이디, 비밀번호 찾기 |", style: TextStyle(
             fontSize: 12, color: Color.fromRGBO(177, 177, 177, 1))),
-        Text("계정이 없으신가요?", style: TextStyle(
-            fontSize: 12, color: Color.fromRGBO(177, 177, 177, 1)),)
-      ],
-    ),
+        GestureDetector(
+            onTap: () => Navigator.pushNamed(context, Routes.SIGN_UP),
+            child: Text("계정이 없으신가요?", style: TextStyle(
+                fontSize: 12, color: Color.fromRGBO(177, 177, 177, 1)),
+            ))
+      ]
+    )
   );
 }
 

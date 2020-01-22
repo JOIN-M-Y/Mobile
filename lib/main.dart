@@ -7,6 +7,7 @@ import 'package:join/page/joinMainPage.dart';
 import 'package:join/page/loginPage.dart';
 
 import 'const/strings.dart';
+import 'page/signUpEmailPage.dart';
 
 void main() {
   if (Platform.isIOS) {
@@ -31,7 +32,10 @@ class JoinApp extends StatelessWidget {
         startAnimation: "intro",
         until: () => Future.delayed(Duration(seconds: 2)),
       ),
-      routes: {Routes.HOME: (_) => JoinMainPage()},
+      routes: {
+        Routes.HOME: (_) => JoinMainPage(),
+        Routes.SIGN_UP: (_) => SignUpEmailPage()
+      },
     );
   }
 }
