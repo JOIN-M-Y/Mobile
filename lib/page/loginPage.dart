@@ -11,23 +11,24 @@ class _LoginPage extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(28, 27, 38, 2),
         body: Padding(
           padding: const EdgeInsets.only(left: 28, right: 28),
           child: SafeArea(
               child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              toolbar(),
-              description(),
-              inputEmailForm(),
-              inputPasswordForm(),
-              loginButton(),
-              googleLoginButton(),
-              idPwFindORSignIn(context)
-            ],
-          )),
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  toolbar(),
+                  description(),
+                  inputEmailForm(),
+                  inputPasswordForm(),
+                  loginButton(context),
+                  googleLoginButton(),
+                  idPwFindORSignIn(context)
+                ],
+              )),
         ));
   }
 }
@@ -78,14 +79,16 @@ Widget googleLoginButton() {
   );
 }
 
-Widget loginButton() {
+Widget loginButton(BuildContext context) {
   return Container(
     alignment: Alignment.centerRight,
     margin: EdgeInsets.only(top: 36),
     child: IconButton(
       padding: EdgeInsets.all(0),
       iconSize: 52,
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, Routes.MAIN);
+      },
       icon: Image.asset("images/btn_login_disabled.png"),
     ),
   );

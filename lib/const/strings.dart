@@ -8,4 +8,5 @@ class Strings {
 class Routes {
   static const String HOME = "/home";
   static const String SIGN_UP = "/signUp";
+  static const String MAIN = "/main";
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:join/page/joinMainPage.dart';
 import 'package:join/page/loginPage.dart';
+import 'package:join/page/mainPage.dart';
 
 import 'const/strings.dart';
 import 'page/signUpEmailPage.dart';
@@ -34,7 +35,8 @@ class JoinApp extends StatelessWidget {
       ),
       routes: {
         Routes.HOME: (_) => JoinMainPage(),
-        Routes.SIGN_UP: (_) => SignUpEmailPage()
+        Routes.SIGN_UP: (_) => SignUpEmailPage(),
+        Routes.MAIN:(_) => MainPage()
       },
     );
   }

@@ -13,6 +13,7 @@ class _SignUpEmailPage extends State<SignUpEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color.fromRGBO(28, 27, 38, 2),
       body: SafeArea(
         child: Padding(
@@ -71,6 +72,9 @@ class _SignUpEmailPage extends State<SignUpEmailPage> {
                 hintText: "이메일",
                 hintStyle: TextStyle(
                     color: Color.fromRGBO(255, 255, 255, 1), fontSize: 24),
+                enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent)
+                ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.transparent),
                 )),
