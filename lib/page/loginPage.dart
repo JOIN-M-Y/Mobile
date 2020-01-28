@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:join/blocs/google_auth_bloc.dart';
 import 'package:join/const/strings.dart';
 
 class LoginPage extends StatefulWidget {
@@ -53,29 +55,40 @@ Widget idPwFindORSignIn(BuildContext context) {
 
 Widget googleLoginButton() {
   return Container(
-    margin: EdgeInsets.only(top: 112),
-    child: FlatButton(
-      onPressed: () {
-
-      },
-      color: Color.fromRGBO(66, 134, 245, 1),
-      padding: EdgeInsets.only(top: 19, bottom: 16),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-          side: BorderSide(color: Color.fromRGBO(66, 134, 245, 1))
+    margin: EdgeInsets.only(top: 52),
+      child: StreamBuilder(
+        stream: googleAuthBloc.googleAccount,
+        builder: (BuildContext context, AsyncSnapshot<GoogleSignInAccount> snapshot) {
+          if (!snapshot.hasData) {
+            return FlatButton(
+              onPressed: () {
+                googleAuthBloc.sigInGoogle();
+              },
+              color: Color.fromRGBO(66, 134, 245, 1),
+              padding: EdgeInsets.only(top: 19, bottom: 16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  side: BorderSide(color: Color.fromRGBO(66, 134, 245, 1))
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.only(right: 4),
+                      child: Image.asset("images/ic_google.png")),
+                  Text("구글 계정으로 시작하기", style: TextStyle(
+                      color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400))
+                ],
+              ),
+            );
+          } else {
+            //Test
+            print("test");
+            return Container(child: Text(snapshot.data.email));
+          }
+        },
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-              margin: EdgeInsets.only(right: 4),
-              child: Image.asset("images/ic_google.png")),
-          Text("구글 계정으로 시작하기", style: TextStyle(
-              color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400))
-        ],
-      ),
-    ),
   );
 }
 
