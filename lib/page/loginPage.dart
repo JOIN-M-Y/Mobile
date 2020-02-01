@@ -59,37 +59,45 @@ Widget googleLoginButton() {
       child: StreamBuilder(
         stream: googleAuthBloc.googleAccount,
         builder: (BuildContext context, AsyncSnapshot<GoogleSignInAccount> snapshot) {
-          if (!snapshot.hasData) {
-            return FlatButton(
-              onPressed: () {
-                googleAuthBloc.sigInGoogle();
-              },
-              color: Color.fromRGBO(66, 134, 245, 1),
-              padding: EdgeInsets.only(top: 19, bottom: 16),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  side: BorderSide(color: Color.fromRGBO(66, 134, 245, 1))
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.only(right: 4),
-                      child: Image.asset("images/ic_google.png")),
-                  Text("구글 계정으로 시작하기", style: TextStyle(
-                      color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400))
-                ],
-              ),
-            );
-          } else {
-            //Test
-            print("test");
-            return Container(child: Text(snapshot.data.email));
+          if(snapshot.hasData){
+            moveGenderPager((){
+              Navigator.pushNamed(context, Routes.GENDER);
+              googleAuthBloc.signOutGoogle();
+            });
           }
+          return FlatButton(
+            onPressed: () {
+                googleAuthBloc.sigInGoogle();
+            },
+            color: Color.fromRGBO(66, 134, 245, 1),
+            padding: EdgeInsets.only(top: 19, bottom: 16),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+                side: BorderSide(color: Color.fromRGBO(66, 134, 245, 1))
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                    margin: EdgeInsets.only(right: 4),
+                    child: Image.asset("images/ic_google.png")),
+                Text("구글 계정으로 시작하기", style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400))
+              ],
+            ),
+          );
         },
       ),
   );
+}
+
+void moveGenderPager(Function callback) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    callback();
+  });
 }
 
 Widget loginButton(BuildContext context) {
