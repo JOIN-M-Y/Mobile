@@ -18,7 +18,8 @@ class _MainPage extends State<MainPage> {
             topToolbar(context),
             topHeader(),
             topSubHeader(),
-            division()
+            division(),
+            topSelect()
           ],
         ),
       ),
@@ -75,4 +76,36 @@ class _MainPage extends State<MainPage> {
   Widget bottomNavigation() {
     return BottomNavigationBar();
   }
+
+  Widget topSelect() {
+    List<MainTopSelected> items = List();
+    items.add(MainTopSelected("전체", false));
+    items.add(MainTopSelected("기획자", false));
+    items.add(MainTopSelected("디자이너", false));
+    items.add(MainTopSelected("개발자", true));
+    return Container(
+      margin: const EdgeInsets.only(top: 12, left: 28),
+      child: Row(
+        children: items.map((item) =>
+            GestureDetector(
+              child: Container(
+                margin: const EdgeInsets.only(right: 16),
+                child: Text(item.title, style: TextStyle(fontSize: 14,
+                    decoration: item.isSelected
+                        ? TextDecoration.underline
+                        : TextDecoration.none,
+                    color: item.isSelected ? Colors.white : Color.fromRGBO(
+                        165, 165, 165, 1))),
+              ),
+            )).toList(),
+      ),
+    );
+  }
+}
+
+class MainTopSelected {
+  String title;
+  bool isSelected = false;
+
+  MainTopSelected(this.title, this.isSelected);
 }
