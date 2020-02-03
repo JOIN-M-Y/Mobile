@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:join/common/ui.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -7,6 +8,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
+  int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,9 +22,45 @@ class _MainPage extends State<MainPage> {
             topHeader(),
             topSubHeader(),
             division(),
-            topSelect()
+            topSelect(),
           ],
         ),
+      ),
+      bottomNavigationBar: JoinBottomNavigation(
+        backgroundColor: Color.fromRGBO(28, 27, 38, 2),
+        selectedIndex: currentIndex,
+        showElevation: false,
+        itemCornerRadius: 6,
+        curve: Curves.decelerate,
+        onItemSelected: (index)=> setState(() {
+          currentIndex = index;
+        }),
+        items: [
+          JoinBottomNavigationItem(
+            icon: Icon(Icons.add_circle),
+            title: Text('홈'),
+            activeColor: Colors.white,
+            textAlign: TextAlign.center,
+          ),
+          JoinBottomNavigationItem(
+            icon: Icon(Icons.find_in_page),
+            title: Text('검색'),
+            activeColor: Colors.white,
+            textAlign: TextAlign.center,
+          ),
+          JoinBottomNavigationItem(
+            icon: Icon(Icons.edit),
+            title: Text('작성'),
+            activeColor: Colors.white,
+            textAlign: TextAlign.center,
+          ),
+          JoinBottomNavigationItem(
+            icon: Icon(Icons.person),
+            title: Text('내정보'),
+            activeColor: Colors.white,
+            textAlign: TextAlign.center,
+          )
+        ],
       ),
     );
   }
@@ -88,6 +127,9 @@ class _MainPage extends State<MainPage> {
       child: Row(
         children: items.map((item) =>
             GestureDetector(
+              onTap: (){
+                print(item.title);
+              },
               child: Container(
                 margin: const EdgeInsets.only(right: 16),
                 child: Text(item.title, style: TextStyle(fontSize: 14,
