@@ -96,16 +96,7 @@ class JoinBottomNavigation extends StatelessWidget {
         .bottomAppBarColor
         : backgroundColor;
     return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        boxShadow: [
-          if (showElevation)
-            const BoxShadow(
-              color: Colors.black12,
-              blurRadius: 2,
-            ),
-        ],
-      ),
+      decoration: BoxDecoration(color: bgColor),
       child: SafeArea(
           child: Container(
               width: MediaQuery.of(context).size.width,
@@ -163,7 +154,7 @@ class NavigationItem extends StatelessWidget {
         scrollDirection: Axis.vertical,
         physics: NeverScrollableScrollPhysics(),
         child: Container(
-          height: isSelected ? 54 : 50,
+          height: 54,
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -183,16 +174,27 @@ class NavigationItem extends StatelessWidget {
                   child: isSelected ? item.title : Text(""),
                 ),
               ),
-              IconTheme(
-                data: IconThemeData(
-                  size: isSelected ? 8 : iconSize,
-                  color: isSelected
-                      ? item.activeColor.withOpacity(1)
-                      : item.inactiveColor == null
-                      ? item.activeColor
-                      : item.inactiveColor,
+              Container(
+                alignment: Alignment.bottomCenter,
+                margin: const EdgeInsets.only(top: 8),
+                child: IconTheme(
+                    data: IconThemeData(
+                      size: isSelected ? 8 : iconSize,
+                      color: isSelected
+                          ? item.activeColor.withOpacity(1)
+                          : item.inactiveColor == null
+                          ? item.activeColor
+                          : item.inactiveColor,
+                    ),
+                    child: isSelected ? Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle
+                      ),
+                    ) : item.icon
                 ),
-                child: item.icon,
               )
             ],
           ),

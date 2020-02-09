@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:join/blocs/recommend_bloc.dart';
 import 'package:join/common/ui.dart';
+import 'package:join/page/recommendPage.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -9,21 +12,29 @@ class MainPage extends StatefulWidget {
 
 class _MainPage extends State<MainPage> {
   int currentIndex = 0;
+  var currentTopTap = "전체";
+
+  String recommendStudyType;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color.fromRGBO(28, 27, 38, 2),
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            topToolbar(context),
-            topHeader(),
-            topSubHeader(),
-            division(),
-            topSelect(),
-          ],
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              topToolbar(context),
+              topHeader(),
+              topSubHeader(),
+              division(),
+              topSelect(),
+              recommendStudy(),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: JoinBottomNavigation(
@@ -32,9 +43,10 @@ class _MainPage extends State<MainPage> {
         showElevation: false,
         itemCornerRadius: 6,
         curve: Curves.decelerate,
-        onItemSelected: (index)=> setState(() {
-          currentIndex = index;
-        }),
+        onItemSelected: (index) =>
+            setState(() {
+              currentIndex = index;
+            }),
         items: [
           JoinBottomNavigationItem(
             icon: Icon(Icons.add_circle),
@@ -62,6 +74,63 @@ class _MainPage extends State<MainPage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget recommendStudy() {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.only(top: 32),
+          height: 232,
+          child: Swiper(
+              containerWidth: double.infinity,
+              itemWidth: double.infinity,
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              autoplay: true,
+              loop: true,
+              itemBuilder: (BuildContext context, int index) {
+                return StreamBuilder(
+                    stream: blocRecommend.streamRecommendStudy,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<
+                            List<RecommendStudy>> snapshot) {
+                      if (snapshot.hasData) {
+                        return RecommendPage(
+                            study: snapshot.data[index]);
+                      } else {
+                        List<RecommendStudy> items = List<
+                            RecommendStudy>();
+                        items.add(RecommendStudy(
+                            "리액트", "타이틀", "서브타이틀", 3, index));
+                        items.add(RecommendStudy(
+                            "리액트", "타이틀", "서브타이틀", 3, index));
+                        items.add(RecommendStudy(
+                            "리액트", "타이틀", "서브타이틀", 3, index));
+                        blocRecommend.addAllRecommendStudy(items);
+                        return Text("없다");
+                      }
+                    }
+                );
+              }),
+        ),
+        Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.only(top: 24, left: 28),
+          width: 132,
+          color: Color.fromRGBO(243, 102, 34, 1),
+          height: 24,
+          child: Text("BEST 5 ∙ React Study",
+              style: TextStyle(color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400)),
+        ),
+        Container(
+            margin: const EdgeInsets.only(top: 250, left: 28),
+            child: Text("React 애플리케이션 웹 개발스터디",
+                style: TextStyle(color: Colors.white, fontSize: 20)))
+      ],
     );
   }
 
@@ -98,7 +167,9 @@ class _MainPage extends State<MainPage> {
       child: Text(
         "원하는 스터디 조인에서 찾아보세요",
         style: TextStyle(
-            fontSize: 14, color: Color.fromRGBO(203, 203, 203, 1), fontWeight: FontWeight.w400),
+            fontSize: 14,
+            color: Color.fromRGBO(203, 203, 203, 1),
+            fontWeight: FontWeight.w400),
       ),
     );
   }
@@ -121,25 +192,34 @@ class _MainPage extends State<MainPage> {
     items.add(MainTopSelected("전체", false));
     items.add(MainTopSelected("기획자", false));
     items.add(MainTopSelected("디자이너", false));
-    items.add(MainTopSelected("개발자", true));
+    items.add(MainTopSelected("개발자", false));
+
     return Container(
-      margin: const EdgeInsets.only(top: 12, left: 28),
+      height: 20,
+      margin: const EdgeInsets.only(top: 8, left: 28),
       child: Row(
-        children: items.map((item) =>
+        children: items
+            .map((item) =>
             GestureDetector(
-              onTap: (){
-                print(item.title);
+              onTap: () {
+                setState(() {
+                  currentTopTap = item.title;
+                });
               },
               child: Container(
                 margin: const EdgeInsets.only(right: 16),
-                child: Text(item.title, style: TextStyle(fontSize: 14,
-                    decoration: item.isSelected
-                        ? TextDecoration.underline
-                        : TextDecoration.none,
-                    color: item.isSelected ? Colors.white : Color.fromRGBO(
-                        165, 165, 165, 1))),
+                child: Text(item.title,
+                    style: TextStyle(
+                        fontSize: 14,
+                        decoration: (currentTopTap == item.title)
+                            ? TextDecoration.underline
+                            : TextDecoration.none,
+                        color: (currentTopTap == item.title)
+                            ? Colors.white
+                            : Color.fromRGBO(165, 165, 165, 1))),
               ),
-            )).toList(),
+            ))
+            .toList(),
       ),
     );
   }
