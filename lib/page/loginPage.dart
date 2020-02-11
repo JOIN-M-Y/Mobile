@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:join/blocs/google_auth_bloc.dart';
 import 'package:join/const/strings.dart';
@@ -15,47 +16,53 @@ class _LoginPage extends State<LoginPage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(28, 27, 38, 2),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 28, right: 28),
-          child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  toolbar(),
-                  description(),
-                  inputEmailForm(),
-                  inputPasswordForm(),
-                  loginButton(context),
-                  googleLoginButton(),
-                  idPwFindORSignIn(context)
-                ],
-              )),
-        ));
-  }
-}
-
-Widget idPwFindORSignIn(BuildContext context) {
-  return Container(
-    margin: EdgeInsets.only(top: 16),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text("아이디, 비밀번호 찾기 |", style: TextStyle(
-            fontSize: 12, color: Color.fromRGBO(177, 177, 177, 1))),
-        GestureDetector(
-            onTap: () => Navigator.pushNamed(context, Routes.SIGN_UP),
-            child: Text("계정이 없으신가요?", style: TextStyle(
-                fontSize: 12, color: Color.fromRGBO(177, 177, 177, 1)),
+        body: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Flexible(flex: 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      description(),
+                      subDescription(),
+                    ],),),
+                Flexible(flex: 1, child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    aroundMainPage(),
+                    division()
+                  ],)),
+                Flexible(flex: 1, child: googleLoginButton())
+              ],
             ))
-      ]
-    )
-  );
-}
+    );
+  }
 
-Widget googleLoginButton() {
-  return Container(
-    margin: EdgeInsets.only(top: 52),
+  Widget aroundMainPage() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, Routes.MAIN);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("둘러보기",
+                style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontSize: 13, color: Color.fromRGBO(216, 216, 216, 1))),
+            Icon(Icons.arrow_right, color: Color.fromRGBO(216, 216, 216, 1))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget googleLoginButton() {
+    return Container(
+      alignment: Alignment.center,
       child: StreamBuilder(
         stream: googleAuthBloc.googleAccount,
         builder: (BuildContext context, AsyncSnapshot<GoogleSignInAccount> snapshot) {
@@ -67,121 +74,51 @@ Widget googleLoginButton() {
           }
           return FlatButton(
             onPressed: () {
-                googleAuthBloc.sigInGoogle();
+              googleAuthBloc.sigInGoogle();
             },
-            color: Color.fromRGBO(66, 134, 245, 1),
-            padding: EdgeInsets.only(top: 19, bottom: 16),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-                side: BorderSide(color: Color.fromRGBO(66, 134, 245, 1))
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                    margin: EdgeInsets.only(right: 4),
-                    child: Image.asset("images/ic_google.png")),
-                Text("구글 계정으로 시작하기", style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400))
-              ],
-            ),
+            child: Image(image: AssetImage(
+                "images/btn_login_google.png")),
           );
         },
       ),
-  );
-}
+    );
+  }
 
-void moveGenderPager(Function callback) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    callback();
-  });
-}
+  void moveGenderPager(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
+  }
 
-Widget loginButton(BuildContext context) {
-  return Container(
-    alignment: Alignment.centerRight,
-    margin: EdgeInsets.only(top: 36),
-    child: IconButton(
-      padding: EdgeInsets.all(0),
-      iconSize: 52,
-      onPressed: () {
-        Navigator.pushNamed(context, Routes.MAIN);
-      },
-      icon: Image.asset("images/btn_login_disabled.png"),
-    ),
-  );
-}
-
-Widget inputPasswordForm() {
-  return Container(
-    margin: EdgeInsets.only(top: 25),
-    child: TextFormField(
-      decoration: InputDecoration(
-          hintText: "비밀번호 입력",
-          hintStyle:
-              TextStyle(color: Color.fromRGBO(165, 165, 165, 1), fontSize: 15),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color.fromRGBO(91, 91, 91, 1)),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          )),
-      style: TextStyle(color: Colors.white, fontSize: 15),
-      keyboardType: TextInputType.emailAddress,
-      maxLines: 1,
-      cursorColor: Colors.white,
-    ),
-  );
-}
-
-Widget inputEmailForm() {
-  return Container(
-    margin: EdgeInsets.only(top: 68),
-    child: TextFormField(
-      decoration: InputDecoration(
-          hintText: "이메일 입력",
-          hintStyle:
-              TextStyle(color: Color.fromRGBO(165, 165, 165, 1), fontSize: 15),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color.fromRGBO(91, 91, 91, 1)),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          )),
-      style: TextStyle(color: Colors.white, fontSize: 15),
-      keyboardType: TextInputType.emailAddress,
-      maxLines: 1,
-      cursorColor: Colors.white,
-    ),
-  );
-}
-
-Widget description() {
-  return Container(
-    margin: EdgeInsets.only(top: 56),
-    child: Text(
-      "로그인후 원하시는 \n스터디를 개설해보세요.",
-      style: TextStyle(
-          fontWeight: FontWeight.w400, color: Colors.white, fontSize: 24),
-    ),
-  );
-}
-
-Widget toolbar() {
-  return Row(
-    children: <Widget>[
-      IconButton(
-        icon: Image.asset("images/arrow_left.png"),
-        onPressed: () {},
-      ),
-      Text(
-        "로그인",
+  Widget description() {
+    return Container(
+      alignment: Alignment.center,
+      child: Text(
+        "반갑습니다.",
         style: TextStyle(
-            fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
-      )
-    ],
-  );
+            fontWeight: FontWeight.w400, color: Colors.white, fontSize: 24),
+      ),
+    );
+  }
+
+  Widget subDescription() {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      child: Text(
+        "회원 서비스 이용을 위해\n로그인 해주세요.", textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Color.fromRGBO(203, 203, 203, 1),
+            fontWeight: FontWeight.w400,
+            fontSize: 17),),
+    );
+  }
+
+  Widget division() {
+    return Container(
+      alignment: Alignment.bottomCenter,
+      width: double.infinity,
+      height: 0.5,
+      color: Colors.white,
+    );
+  }
 }

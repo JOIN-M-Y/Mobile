@@ -147,15 +147,15 @@ class NavigationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       width: MediaQuery.of(context).size.width/4,
-      height: isSelected ? 54 : 50,
+      height: isSelected ? 54 : 56,
       duration: animationDuration,
       curve: curve,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         physics: NeverScrollableScrollPhysics(),
         child: Container(
-          height: 54,
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          height: 56,
+          alignment: Alignment.center,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
