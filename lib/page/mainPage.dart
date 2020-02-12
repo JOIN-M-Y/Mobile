@@ -14,8 +14,6 @@ class _MainPage extends State<MainPage> {
   int currentIndex = 0;
   var currentTopTap = "전체";
 
-  String recommendStudyType;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,13 +24,15 @@ class _MainPage extends State<MainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               topToolbar(context),
               topHeader(),
               topSubHeader(),
               division(),
               topSelect(),
-              recommendStudy(),
+              bestStudy(),
+              recommendStudyType()
             ],
           ),
         ),
@@ -77,7 +77,55 @@ class _MainPage extends State<MainPage> {
     );
   }
 
-  Widget recommendStudy() {
+  Widget recommendStudyType() {
+    return Container(
+      margin: const EdgeInsets.only(left: 28, right: 28, top: 60),
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            color: Colors.white,
+            height: 1,
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("추천 스터디",
+                    style: TextStyle(color: Colors.white, fontSize: 18)),
+                GestureDetector(
+                  onTap: () {
+
+                  },
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Icon(Icons.plus_one,
+                            color: Color.fromRGBO(243, 102, 34, 1)),
+                        Text("더보기", style: TextStyle(
+                            color: Color.fromRGBO(216, 216, 216, 1),
+                            fontSize: 12))
+                      ])),
+              ],),
+          ),
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(top: 32),
+            child: Row(children: <Widget>[
+              Text("Developer",
+                  style: TextStyle(color: Colors.white, fontSize: 24,fontWeight: FontWeight.bold)),
+              Text(" (4)", style: TextStyle(
+                  color: Color.fromRGBO(165, 165, 165, 1), fontSize: 18))
+            ],),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget bestStudy() {
     return Stack(
       children: <Widget>[
         Container(
