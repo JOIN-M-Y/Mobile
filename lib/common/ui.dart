@@ -44,7 +44,7 @@ Widget topDescription(String topTitle, String subTitle) {
 }
 
 class JoinBottomNavigationItem {
-  final Icon icon;
+  final Image icon;
   final Text title;
   final Color activeColor;
   final Color inactiveColor;
@@ -77,7 +77,7 @@ class JoinBottomNavigation extends StatelessWidget {
     Key key,
     this.selectedIndex = 0,
     this.showElevation = true,
-    this.iconSize = 22,
+    this.iconSize = 13,
     this.backgroundColor,
     this.itemCornerRadius = 50,
     this.containerHeight = 56,
@@ -176,7 +176,8 @@ class NavigationItem extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.bottomCenter,
-                margin: const EdgeInsets.only(top: 8),
+                margin: isSelected ? EdgeInsets.only(top: 8) : EdgeInsets.only(
+                    top: 0),
                 child: IconTheme(
                     data: IconThemeData(
                       size: isSelected ? 8 : iconSize,

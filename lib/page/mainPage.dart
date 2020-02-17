@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:join/blocs/recommend_bloc.dart';
 import 'package:join/common/ui.dart';
-import 'package:join/page/recommendPage.dart';
+import 'package:join/page/tab_profile/profilePage.dart';
+import 'package:join/page/tab_study/bestStudyPage.dart';
+import 'package:join/page/tab_study/recommendStudyPage.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -11,63 +13,100 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
-  int currentIndex = 0;
   var currentTopTap = "전체";
+  int _currentIndex = 0;
+  PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color.fromRGBO(28, 27, 38, 2),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SafeArea(
+        child: SizedBox.expand(
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() => _currentIndex = index);
+            },
             children: <Widget>[
-              topToolbar(context),
-              topHeader(),
-              topSubHeader(),
-              division(),
-              topSelect(),
-              bestStudy(),
-              recommendStudyType()
+              SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    topHeader(),
+                    topSubHeader(),
+                    division(),
+                    topSelect(),
+                    bestStudy(),
+                    recommendStudyType()
+                  ],
+                ),
+              ),
+              Container(color: Colors.red,),
+              Container(color: Colors.green,),
+              ProfilePage()
             ],
           ),
-        ),
+          ),
       ),
       bottomNavigationBar: JoinBottomNavigation(
         backgroundColor: Color.fromRGBO(28, 27, 38, 2),
-        selectedIndex: currentIndex,
+        selectedIndex: _currentIndex,
         showElevation: false,
         itemCornerRadius: 6,
         curve: Curves.decelerate,
-        onItemSelected: (index) =>
-            setState(() {
-              currentIndex = index;
-            }),
+        onItemSelected: (index) {
+          setState(() => _currentIndex = index);
+          _pageController.jumpToPage(index);
+        },
         items: [
           JoinBottomNavigationItem(
-            icon: Icon(Icons.add_circle),
+            icon: Image(
+                width: 22,
+                height: 22,
+                image: AssetImage("images/ic_home.png")),
             title: Text('홈'),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
           ),
           JoinBottomNavigationItem(
-            icon: Icon(Icons.find_in_page),
+            icon: Image(
+                width: 22,
+                height: 22,
+                image: AssetImage("images/ic_search.png")),
             title: Text('검색'),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
           ),
           JoinBottomNavigationItem(
-            icon: Icon(Icons.edit),
+            icon: Image(
+                width: 22,
+                height: 22,
+                image: AssetImage("images/ic_create_study.png")),
             title: Text('작성'),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
           ),
           JoinBottomNavigationItem(
-            icon: Icon(Icons.person),
+            icon: Image(
+                width: 22,
+                height: 22,
+                image: AssetImage("images/ic_mypage.png")),
             title: Text('내정보'),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
@@ -119,6 +158,37 @@ class _MainPage extends State<MainPage> {
               Text(" (4)", style: TextStyle(
                   color: Color.fromRGBO(165, 165, 165, 1), fontSize: 18))
             ],),
+          ),
+          SizedBox(height: 15),
+          Container(
+            child: StreamBuilder(
+                stream: blocStudy.streamRecommendStudy,
+                builder: (BuildContext context,
+                    AsyncSnapshot<
+                        List<RecommendStudy>> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return RecommendStudyPage(
+                              study: snapshot.data[index]);
+                        });
+                  } else {
+                    List<RecommendStudy> items = List<
+                        RecommendStudy>();
+                    items.add(RecommendStudy(
+                        "리액트", "타이틀", "서브타이틀", 3, 1));
+                    items.add(RecommendStudy(
+                        "리액트", "타이틀", "서브타이틀", 3, 2));
+                    items.add(RecommendStudy(
+                        "리액트", "타이틀", "서브타이틀", 3, 3));
+                    blocStudy.addAllRecommendStudy(items);
+                    return CircularProgressIndicator();
+                  }
+                }
+            ),
           )
         ],
       ),
@@ -140,13 +210,12 @@ class _MainPage extends State<MainPage> {
               loop: true,
               itemBuilder: (BuildContext context, int index) {
                 return StreamBuilder(
-                    stream: blocRecommend.streamRecommendStudy,
+                    stream: blocStudy.streamBestStudy,
                     builder: (BuildContext context,
                         AsyncSnapshot<
                             List<RecommendStudy>> snapshot) {
                       if (snapshot.hasData) {
-                        return RecommendPage(
-                            study: snapshot.data[index]);
+                        return BestStudyPage(study: snapshot.data[index]);
                       } else {
                         List<RecommendStudy> items = List<
                             RecommendStudy>();
@@ -156,7 +225,7 @@ class _MainPage extends State<MainPage> {
                             "리액트", "타이틀", "서브타이틀", 3, index));
                         items.add(RecommendStudy(
                             "리액트", "타이틀", "서브타이틀", 3, index));
-                        blocRecommend.addAllRecommendStudy(items);
+                        blocStudy.addAllBestStudy(items);
                         return Text("없다");
                       }
                     }

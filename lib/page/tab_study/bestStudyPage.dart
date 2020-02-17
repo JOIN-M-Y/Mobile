@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:join/blocs/recommend_bloc.dart';
 
-class RecommendPage extends StatefulWidget {
+class BestStudyPage extends StatefulWidget {
   final RecommendStudy study;
 
-  const RecommendPage({Key key, this.study}) : super(key: key);
+  const BestStudyPage({Key key, this.study}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _RecommendPage();
+  State<StatefulWidget> createState() => _BestStudyPage();
 }
 
-class _RecommendPage extends State<RecommendPage> {
+class _BestStudyPage extends State<BestStudyPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
