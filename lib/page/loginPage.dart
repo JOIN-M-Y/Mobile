@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -58,6 +59,16 @@ class _LoginPage extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void getUserInfo() async {
+    try {
+      Response response = await Dio().get(
+          "/accounts", queryParameters: {"email": "", "provider": "google"});
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Widget googleLoginButton() {
