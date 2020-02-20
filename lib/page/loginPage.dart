@@ -61,13 +61,18 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  void getUserInfo() async {
+  Future<Response> getUserInfo(String socialId) async {
     try {
       Response response = await Dio().get(
-          "/accounts", queryParameters: {"email": "", "provider": "google"});
-      print(response);
+          "accounts", queryParameters: {
+        "email": "@gmail.com",
+        "provider": "gmail",
+        "social_id": socialId
+      });
+      return response;
     } catch (e) {
-      print(e);
+      print(e.toString());
+      return null;
     }
   }
 
@@ -78,9 +83,17 @@ class _LoginPage extends State<LoginPage> {
         stream: googleAuthBloc.googleAccount,
         builder: (BuildContext context, AsyncSnapshot<GoogleSignInAccount> snapshot) {
           if(snapshot.hasData){
-            moveGenderPager((){
-              Navigator.pushNamed(context, Routes.GENDER);
-              googleAuthBloc.signOutGoogle();
+            getUserInfo(snapshot.data.id)
+                .asStream()
+                .listen((data) {
+              if (data != null) {
+                //메인화면 이동
+              } else {
+                moveGenderPager(() {
+                  Navigator.pushNamed(context, Routes.GENDER);
+                  googleAuthBloc.signOutGoogle();
+                });
+              }
             });
           }
           return FlatButton(
