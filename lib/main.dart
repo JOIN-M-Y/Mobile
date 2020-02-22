@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:join/page/detailJobPage.dart';
 import 'package:join/page/genderSelectPage.dart';
+import 'package:join/page/jobPage.dart';
 import 'package:join/page/joinMainPage.dart';
 import 'package:join/page/loginPage.dart';
 import 'package:join/page/mainPage.dart';
@@ -38,7 +40,9 @@ class JoinApp extends StatelessWidget {
         Routes.HOME: (_) => JoinMainPage(),
         Routes.SIGN_UP: (_) => SignUpEmailPage(),
         Routes.MAIN:(_) => MainPage(),
-        Routes.GENDER:(_) => GenderSelectPage()
+        Routes.GENDER: (_) => GenderSelectPage(),
+        Routes.JOB: (_) => JobPage(),
+        Routes.DETAIL_JOB: (_) => DetailJobPage(),
       },
     );
   }

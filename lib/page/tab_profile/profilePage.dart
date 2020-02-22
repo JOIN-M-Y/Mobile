@@ -1,12 +1,82 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ProfilePage();
 }
-
+enum AppState {
+  free,
+  picked,
+  cropped,
+}
 class _ProfilePage extends State<ProfilePage> {
+  AppState state;
+  File imageFile;
+  bool _alarmSetting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    state = AppState.free;
+  }
+
+  Future<Null> _pickImage() async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      setState(() {
+        state = AppState.picked;
+      });
+    }
+  }
+
+  void _clearImage() {
+    imageFile = null;
+    setState(() {
+      state = AppState.free;
+    });
+  }
+
+  Future<Null> _cropImage() async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ]
+            : [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio5x3,
+          CropAspectRatioPreset.ratio5x4,
+          CropAspectRatioPreset.ratio7x5,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Cropper',
+        ));
+    if (croppedFile != null) {
+      imageFile = croppedFile;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,10 +94,19 @@ class _ProfilePage extends State<ProfilePage> {
               children: <Widget>[
                 Stack(
                   children: <Widget>[
-                    Image(
+                    SizedBox(
                         width: 60,
                         height: 60,
-                        image: AssetImage('images/profile.png')),
+                        child: InkWell(
+                          onTap: () {
+                            if (state == AppState.free)
+                              _pickImage();
+                            else if (state == AppState.picked)
+                              _cropImage();
+                            else if (state == AppState.cropped) _clearImage();
+                          },
+                          child: Image.asset('images/profile.png'),
+                        )),
                     Positioned(
                       bottom: -5,
                       right: -5,
@@ -124,10 +203,14 @@ class _ProfilePage extends State<ProfilePage> {
                     Text("알림설정",
                         style: TextStyle(color: Colors.white, fontSize: 17)),
                     Switch(
-                        inactiveTrackColor: Colors.grey,
-                        inactiveThumbColor: Color.fromRGBO(189, 189, 189, 1),
-                        value: false,
-                        onChanged: (status) {})
+                      inactiveTrackColor: Colors.grey,
+                      inactiveThumbColor: Color.fromRGBO(189, 189, 189, 1),
+                      value: _alarmSetting,
+                      onChanged: (status) {
+                        setState(() {
+                          this._alarmSetting = status;
+                        });
+                      },)
                   ],
                 ),
               ),
