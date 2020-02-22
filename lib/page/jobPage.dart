@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:join/common/ui.dart';
 import 'package:join/const/strings.dart';
 
-class GenderSelectPage extends StatefulWidget {
+class JobPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _GenderSelectPage();
+  State<StatefulWidget> createState() => _JobPage();
 }
 
-class _GenderSelectPage extends State<GenderSelectPage> {
+class _JobPage extends State<JobPage> {
   bool value = false;
   int group = 1;
 
@@ -17,23 +17,23 @@ class _GenderSelectPage extends State<GenderSelectPage> {
     return Theme(
       data: ThemeData.dark(),
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Color.fromRGBO(28, 27, 38, 2),
-          body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 6, left: 28),
-                child: Column(
+        backgroundColor: Color.fromRGBO(28, 27, 38, 2),
+        body: SafeArea(
+          child: Padding(
+              padding: const EdgeInsets.only(top: 6, left: 28),
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     topToolbar(context),
                     Container(
                         margin: const EdgeInsets.only(top: 17),
-                        child:
-                        topDescription(
-                            "성별 선택", "추천스터디를 위하여 필요합니다.\n성별을 선택해주세요")),
-                    radioButton(1, "남자"),
+                        child: topDescription(
+                            "직업 선택", "추천스터디를 위하여 필요합니다.\n자신의 직업을 선택해주세요")),
+                    radioButton(1, "개발자"),
                     division(),
-                    radioButton(2, "여자"),
+                    radioButton(2, "디자이너"),
+                    division(),
+                    radioButton(3, "기획자"),
                     division(),
                     Container(
                       margin: const EdgeInsets.only(top: 32),
@@ -42,21 +42,22 @@ class _GenderSelectPage extends State<GenderSelectPage> {
                         color: Colors.white,
                         iconSize: 52,
                         onPressed: () {
-                          Navigator.pushNamed(context, Routes.JOB);
+                          Navigator.pushNamed(context, Routes.DETAIL_JOB);
                         },
-                        icon: Image.asset(
-                            "images/btn_login_disabled.png",
+                        icon: Image.asset("images/btn_login_disabled.png",
                             color: Colors.white),
-                        enableFeedback: false,),
+                        enableFeedback: false,
+                      ),
                     )
-                  ],
-                ),
-              ))),
+                  ])),
+        ),
+      ),
     );
   }
 
   Widget division() {
-    return Container(width: double.infinity,
+    return Container(
+        width: double.infinity,
         height: 1,
         margin: const EdgeInsets.only(top: 9, right: 28),
         color: Color.fromRGBO(91, 91, 91, 1));

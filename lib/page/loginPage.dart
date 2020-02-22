@@ -83,18 +83,26 @@ class _LoginPage extends State<LoginPage> {
         stream: googleAuthBloc.googleAccount,
         builder: (BuildContext context, AsyncSnapshot<GoogleSignInAccount> snapshot) {
           if(snapshot.hasData){
-            getUserInfo(snapshot.data.id)
-                .asStream()
-                .listen((data) {
-              if (data != null) {
-                //메인화면 이동
-              } else {
-                moveGenderPager(() {
-                  Navigator.pushNamed(context, Routes.GENDER);
-                  googleAuthBloc.signOutGoogle();
-                });
-              }
+            moveGenderPager(() {
+              Navigator.pushNamed(context, Routes.GENDER);
+              googleAuthBloc.signOutGoogle();
             });
+//            getUserInfo(snapshot.data.id)
+//                .asStream()
+//                .listen((data) {
+//              if (data != null) {
+//                //메인화면 이동
+//              } else {
+//                moveGenderPager(() {
+//                  Navigator.pushNamed(context, Routes.GENDER);
+//                  googleAuthBloc.signOutGoogle();
+//                });
+//              }
+//            });
+//            moveGenderPager(() {
+//              Navigator.pushNamed(context, Routes.GENDER);
+//              googleAuthBloc.signOutGoogle();
+//            });
           }
           return FlatButton(
             onPressed: () {
