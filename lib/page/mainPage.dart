@@ -5,6 +5,7 @@ import 'package:join/blocs/recommend_bloc.dart';
 import 'package:join/common/ui.dart';
 import 'package:join/page/tab_profile/profilePage.dart';
 import 'package:join/page/tab_study/bestStudyPage.dart';
+import 'package:join/page/tab_study/newStudyPage.dart';
 import 'package:join/page/tab_study/recommendStudyPage.dart';
 
 class MainPage extends StatefulWidget {
@@ -53,7 +54,8 @@ class _MainPage extends State<MainPage> {
                     division(),
                     topSelect(),
                     bestStudy(),
-                    recommendStudyType()
+                    recommendStudyType(),
+                    NewStudyPage()
                   ],
                 ),
               ),
@@ -139,9 +141,10 @@ class _MainPage extends State<MainPage> {
 
                   },
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Icon(Icons.plus_one,
+                        Icon(
+                            Icons.add,
+                            size: 13,
                             color: Color.fromRGBO(243, 102, 34, 1)),
                         Text("더보기", style: TextStyle(
                             color: Color.fromRGBO(216, 216, 216, 1),
@@ -173,7 +176,9 @@ class _MainPage extends State<MainPage> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           return RecommendStudyPage(
-                              study: snapshot.data[index]);
+                            study: snapshot.data[index],
+                            isLastPosition: snapshot.data.length-1 == index,
+                          );
                         });
                   } else {
                     List<RecommendStudy> items = List<
@@ -298,10 +303,6 @@ class _MainPage extends State<MainPage> {
       height: 1,
       color: Colors.white,
     );
-  }
-
-  Widget bottomNavigation() {
-    return BottomNavigationBar();
   }
 
   Widget topSelect() {

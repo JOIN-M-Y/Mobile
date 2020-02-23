@@ -3,8 +3,10 @@ import 'package:join/blocs/recommend_bloc.dart';
 
 class RecommendStudyPage extends StatefulWidget {
   final RecommendStudy study;
+  final bool isLastPosition;
 
-  const RecommendStudyPage({Key key, this.study}) : super(key: key);
+  const RecommendStudyPage({Key key, this.study, this.isLastPosition})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _RecommendStudyPage();
@@ -63,7 +65,7 @@ class _RecommendStudyPage extends State<RecommendStudyPage> {
           Container(
             margin: const EdgeInsets.only(top: 16),
             height: 0.5,
-            color: Colors.white,
+            color: (widget.isLastPosition) ? Colors.transparent : Colors.white,
           )
         ],
       ),
