@@ -10,6 +10,13 @@ class NewStudyPage extends StatefulWidget {
 class _NewStudyPage extends State<NewStudyPage> {
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery
+        .of(context)
+        .size;
+
+    /*24 is for notification bar on Android*/
+    final double itemHeight = (size.height - 24) / 2;
+    final double itemWidth = size.width / 2;
     return Container(
         margin: const EdgeInsets.only(top: 60),
         child: Column(children: <Widget>[
@@ -72,7 +79,10 @@ class _NewStudyPage extends State<NewStudyPage> {
                               margin: const EdgeInsets.only(
                                   left: 15, right: 8, top: 250, bottom: 4),
                               width:
-                                  (MediaQuery.of(context).size.width / 2) / 2,
+                              (MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width / 2) / 2,
                               alignment: Alignment.center,
                               color: Colors.grey,
                               height: 24,
@@ -88,7 +98,7 @@ class _NewStudyPage extends State<NewStudyPage> {
                           margin: const EdgeInsets.only(top: 24),
                           child: Text("전 외국계 앱회사 대표의\n한국 데이팅앱 시장과 기획자를 위한",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 17)),
+                              TextStyle(color: Colors.white, fontSize: 17)),
                         )
                       ],
                     ),
@@ -102,50 +112,56 @@ class _NewStudyPage extends State<NewStudyPage> {
             height: 0.5,
           ),
           SizedBox(height: 32),
-          GridView.count(
-            shrinkWrap: true,
-            mainAxisSpacing: 40,
-            crossAxisCount: 2,
-            children: List.generate(5, (index) {
-              return Container(
-                margin: const EdgeInsets.only(top: 12, left: 28, right: 28),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Image(
-                        width: 152,
-                        height: 140,
-                        image: AssetImage('images/img.png'),
-                        fit: BoxFit.fill),
-                    Expanded(
-                      child: Container(
-                        child: Text("BX Design",
-                            style: TextStyle(
-                                color: Color.fromRGBO(211, 211, 211, 1),
-                                fontSize: 10)),
-                        margin: const EdgeInsets.only(top: 12),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: Text("나무13과 함께 레트로 아이패드 드로잉",
-                            style: TextStyle(color: Colors.white, fontSize: 13)),
-                        margin: const EdgeInsets.only(top: 11),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                          child: Text("나무13과 함께 레트로 아이패드 드로잉",
+          Padding(
+            padding: const EdgeInsets.only(left: 28, right: 28),
+            child: GridView.count(
+              physics: ScrollPhysics(),
+              shrinkWrap: true,
+              mainAxisSpacing: 40,
+              childAspectRatio: (itemWidth / itemHeight),
+              crossAxisCount: 2,
+              children: List.generate(5, (index) {
+                return Container(
+                  margin: const EdgeInsets.only(top: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Image(
+                          width: 152,
+                          height: 140,
+                          image: AssetImage('images/img.png'),
+                          fit: BoxFit.fill),
+                      Expanded(
+                        child: Container(
+                          child: Text("BX Design",
                               style: TextStyle(
                                   color: Color.fromRGBO(211, 211, 211, 1),
-                                  fontSize: 11)),
-                          margin: const EdgeInsets.only(top: 4)),
-                    )
-                  ],
-                ),
-              );
-            }),
+                                  fontSize: 10)),
+                          margin: const EdgeInsets.only(top: 12),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Text("나무13과 함께 레트로 아이패드 드로잉",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 13)),
+                          margin: const EdgeInsets.only(right: 20),
+                        ),
+                      ),
+                      Expanded(
+                          child: Container(
+                            child: Text("강남구 평일 오후 3주",
+                                style: TextStyle(
+                                    color: Color.fromRGBO(211, 211, 211, 1),
+                                    fontSize: 11)),
+                            margin: const EdgeInsets.only(right: 20,top: 5),
+                          ))
+                    ],
+                  ),
+                );
+              }),
+            ),
           ),
         ]));
   }

@@ -43,19 +43,34 @@ class _MainPage extends State<MainPage> {
               setState(() => _currentIndex = index);
             },
             children: <Widget>[
-              SingleChildScrollView(
+              Container(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    topHeader(),
-                    topSubHeader(),
-                    division(),
-                    topSelect(),
-                    bestStudy(),
-                    recommendStudyType(),
-                    NewStudyPage()
+                    Container(
+                      margin: const EdgeInsets.only(right: 28, top: 12),
+                      alignment: Alignment.centerRight,
+                      height: 44,
+                      child: Icon(Icons.alarm, color: Colors.white),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            topHeader(),
+                            topSubHeader(),
+                            division(),
+                            topSelect(),
+                            bestStudy(),
+                            recommendStudyType(),
+                            NewStudyPage(),
+                            SizedBox(height: 48)
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -272,7 +287,7 @@ class _MainPage extends State<MainPage> {
 
   Widget topHeader() {
     return Container(
-      margin: const EdgeInsets.only(top: 40, left: 28),
+      margin: const EdgeInsets.only(top: 22, left: 28),
       width: double.infinity,
       child: Text(
         "어떤 스터디를\n생각하고 계신가요?",
