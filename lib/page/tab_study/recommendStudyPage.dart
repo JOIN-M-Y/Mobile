@@ -15,7 +15,6 @@ class RecommendStudyPage extends StatefulWidget {
 class _RecommendStudyPage extends State<RecommendStudyPage> {
   @override
   Widget build(BuildContext context) {
-    print("dfssdf");
     return Container(
       width: double.infinity,
       child: Column(
