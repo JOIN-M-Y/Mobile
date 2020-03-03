@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:join/page/detailJobPage.dart';
-import 'package:join/page/genderSelectPage.dart';
-import 'package:join/page/jobPage.dart';
+import 'package:join/page/signin/detailJobPage.dart';
+import 'package:join/page/signin/genderSelectPage.dart';
+import 'package:join/page/signin/jobPage.dart';
 import 'package:join/page/joinMainPage.dart';
 import 'package:join/page/loginPage.dart';
 import 'package:join/page/mainPage.dart';
@@ -26,9 +26,7 @@ class JoinApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue,),
       debugShowCheckedModeBanner: false,
       home: SplashScreen.navigate(
         name: "images/join_splash.flr",
@@ -39,10 +37,12 @@ class JoinApp extends StatelessWidget {
       routes: {
         Routes.HOME: (_) => JoinMainPage(),
         Routes.SIGN_UP: (_) => SignUpEmailPage(),
-        Routes.MAIN:(_) => MainPage(),
+        Routes.MAIN: (_) => MainPage(),
         Routes.GENDER: (_) => GenderSelectPage(),
-        Routes.JOB: (_) => JobPage(),
-        Routes.DETAIL_JOB: (_) => DetailJobPage(),
+        Routes.JOB: (context) =>
+            JobPage(ModalRoute.of(context).settings.arguments),
+        Routes.DETAIL_JOB: (context) =>
+            DetailJobPage(ModalRoute.of(context).settings.arguments),
       },
     );
   }

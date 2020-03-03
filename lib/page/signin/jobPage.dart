@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:join/common/ui.dart';
 import 'package:join/const/strings.dart';
 
+import 'detailJobPage.dart';
+
 class JobPage extends StatefulWidget {
+  final JobPageArguments arguments;
+
+  JobPage(this.arguments);
+
   @override
   State<StatefulWidget> createState() => _JobPage();
 }
@@ -42,7 +48,21 @@ class _JobPage extends State<JobPage> {
                         color: Colors.white,
                         iconSize: 52,
                         onPressed: () {
-                          Navigator.pushNamed(context, Routes.DETAIL_JOB);
+                          var position;
+                          switch (group) {
+                            case 1:
+                              position = "develop";
+                              break;
+                            case 2:
+                              position = "design";
+                              break;
+                            case 3:
+                              position = "planning";
+                              break;
+                          }
+                          Navigator.pushNamed(context, Routes.DETAIL_JOB,
+                              arguments: DetailJobPageArguments(
+                                  widget.arguments.gender, position));
                         },
                         icon: Image.asset("images/btn_login_disabled.png",
                             color: Colors.white),
@@ -77,4 +97,10 @@ class _JobPage extends State<JobPage> {
           },
         ));
   }
+}
+
+class JobPageArguments {
+  final String gender;
+
+  JobPageArguments(this.gender);
 }

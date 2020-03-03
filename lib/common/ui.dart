@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
 Widget topToolbar(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: <Widget>[
-      IconButton(
-        icon: Image.asset("images/arrow_left.png"),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      )
-    ],
+  return Container(
+    width: double.infinity,
+    height: 44,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        IconButton(
+          icon: Image.asset("images/arrow_left.png"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        )
+      ],
+    ),
   );
 }
 
@@ -91,9 +95,7 @@ class JoinBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bgColor = (backgroundColor == null)
-        ? Theme
-        .of(context)
-        .bottomAppBarColor
+        ? Theme.of(context).bottomAppBarColor
         : backgroundColor;
     return Container(
       decoration: BoxDecoration(color: bgColor),
@@ -146,7 +148,7 @@ class NavigationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      width: MediaQuery.of(context).size.width/4,
+      width: MediaQuery.of(context).size.width / 4,
       height: isSelected ? 54 : 56,
       duration: animationDuration,
       curve: curve,
@@ -167,8 +169,7 @@ class NavigationItem extends StatelessWidget {
                   style: TextStyle(
                       color: item.activeColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 12
-                  ),
+                      fontSize: 12),
                   maxLines: 1,
                   textAlign: item.textAlign,
                   child: isSelected ? item.title : Text(""),
@@ -176,26 +177,26 @@ class NavigationItem extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.bottomCenter,
-                margin: isSelected ? EdgeInsets.only(top: 8) : EdgeInsets.only(
-                    top: 0),
+                margin: isSelected
+                    ? EdgeInsets.only(top: 8)
+                    : EdgeInsets.only(top: 0),
                 child: IconTheme(
                     data: IconThemeData(
                       size: isSelected ? 8 : iconSize,
                       color: isSelected
                           ? item.activeColor.withOpacity(1)
                           : item.inactiveColor == null
-                          ? item.activeColor
-                          : item.inactiveColor,
+                              ? item.activeColor
+                              : item.inactiveColor,
                     ),
-                    child: isSelected ? Container(
-                      width: 4,
-                      height: 4,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle
-                      ),
-                    ) : item.icon
-                ),
+                    child: isSelected
+                        ? Container(
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                                color: Colors.white, shape: BoxShape.circle),
+                          )
+                        : item.icon),
               )
             ],
           ),
