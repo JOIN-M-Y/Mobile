@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
 
+import '../config.dart';
 import 'AppInterceptors.dart';
 
 Dio createDio() {
   return Dio(BaseOptions(
-      connectTimeout: 10000,
-      receiveTimeout: 10000,
-      baseUrl: "http://104.156.238.171:80/"));
+      connectTimeout: 10000, receiveTimeout: 10000, baseUrl: Config.BASE_URL));
 }
 
 Dio addInterceptors(Dio dio) {
