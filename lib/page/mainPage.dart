@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -17,11 +18,45 @@ class _MainPage extends State<MainPage> {
   var currentTopTap = "전체";
   int _currentIndex = 0;
   PageController _pageController;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    setUpNotification();
+  }
+
+  void setUpNotification() {
+    _firebaseMessaging.configure(
+      //앱 실행중일떄
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message["notification"]["title"]),
+              subtitle: Text(message["notification"]["body"]),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("OK"),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          ),
+        );
+      },
+      // 앱이 완전히 종료된 경우
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      // 앱이 닫혀있었으나 백그라운드로 동작중인 경우
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
   }
 
   @override
@@ -74,12 +109,16 @@ class _MainPage extends State<MainPage> {
                   ],
                 ),
               ),
-              Container(color: Colors.red,),
-              Container(color: Colors.green,),
+              Container(
+                color: Colors.red,
+              ),
+              Container(
+                color: Colors.green,
+              ),
               ProfilePage()
             ],
           ),
-          ),
+        ),
       ),
       bottomNavigationBar: JoinBottomNavigation(
         backgroundColor: Color.fromRGBO(28, 27, 38, 2),
@@ -94,9 +133,7 @@ class _MainPage extends State<MainPage> {
         items: [
           JoinBottomNavigationItem(
             icon: Image(
-                width: 22,
-                height: 22,
-                image: AssetImage("images/ic_home.png")),
+                width: 22, height: 22, image: AssetImage("images/ic_home.png")),
             title: Text('홈'),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
@@ -152,38 +189,40 @@ class _MainPage extends State<MainPage> {
                 Text("추천 스터디",
                     style: TextStyle(color: Colors.white, fontSize: 18)),
                 GestureDetector(
-                  onTap: () {
-
-                  },
-                  child: Row(
-                      children: <Widget>[
-                        Icon(
-                            Icons.add,
-                            size: 13,
-                            color: Color.fromRGBO(243, 102, 34, 1)),
-                        Text("더보기", style: TextStyle(
-                            color: Color.fromRGBO(216, 216, 216, 1),
-                            fontSize: 12))
-                      ])),
-              ],),
+                    onTap: () {},
+                    child: Row(children: <Widget>[
+                      Icon(Icons.add,
+                          size: 13, color: Color.fromRGBO(243, 102, 34, 1)),
+                      Text("더보기",
+                          style: TextStyle(
+                              color: Color.fromRGBO(216, 216, 216, 1),
+                              fontSize: 12))
+                    ])),
+              ],
+            ),
           ),
           Container(
             width: double.infinity,
             margin: const EdgeInsets.only(top: 32),
-            child: Row(children: <Widget>[
-              Text("Developer",
-                  style: TextStyle(color: Colors.white, fontSize: 24,fontWeight: FontWeight.bold)),
-              Text(" (4)", style: TextStyle(
-                  color: Color.fromRGBO(165, 165, 165, 1), fontSize: 18))
-            ],),
+            child: Row(
+              children: <Widget>[
+                Text("Developer",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold)),
+                Text(" (4)",
+                    style: TextStyle(
+                        color: Color.fromRGBO(165, 165, 165, 1), fontSize: 18))
+              ],
+            ),
           ),
           SizedBox(height: 15),
           Container(
             child: StreamBuilder(
                 stream: blocStudy.streamRecommendStudy,
                 builder: (BuildContext context,
-                    AsyncSnapshot<
-                        List<RecommendStudy>> snapshot) {
+                    AsyncSnapshot<List<RecommendStudy>> snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
@@ -192,23 +231,18 @@ class _MainPage extends State<MainPage> {
                         itemBuilder: (BuildContext context, int index) {
                           return RecommendStudyPage(
                             study: snapshot.data[index],
-                            isLastPosition: snapshot.data.length-1 == index,
+                            isLastPosition: snapshot.data.length - 1 == index,
                           );
                         });
                   } else {
-                    List<RecommendStudy> items = List<
-                        RecommendStudy>();
-                    items.add(RecommendStudy(
-                        "리액트", "타이틀", "서브타이틀", 3, 1));
-                    items.add(RecommendStudy(
-                        "리액트", "타이틀", "서브타이틀", 3, 2));
-                    items.add(RecommendStudy(
-                        "리액트", "타이틀", "서브타이틀", 3, 3));
+                    List<RecommendStudy> items = List<RecommendStudy>();
+                    items.add(RecommendStudy("리액트", "타이틀", "서브타이틀", 3, 1));
+                    items.add(RecommendStudy("리액트", "타이틀", "서브타이틀", 3, 2));
+                    items.add(RecommendStudy("리액트", "타이틀", "서브타이틀", 3, 3));
                     blocStudy.addAllRecommendStudy(items);
                     return CircularProgressIndicator();
                   }
-                }
-            ),
+                }),
           )
         ],
       ),
@@ -232,24 +266,21 @@ class _MainPage extends State<MainPage> {
                 return StreamBuilder(
                     stream: blocStudy.streamBestStudy,
                     builder: (BuildContext context,
-                        AsyncSnapshot<
-                            List<RecommendStudy>> snapshot) {
+                        AsyncSnapshot<List<RecommendStudy>> snapshot) {
                       if (snapshot.hasData) {
                         return BestStudyPage(study: snapshot.data[index]);
                       } else {
-                        List<RecommendStudy> items = List<
-                            RecommendStudy>();
-                        items.add(RecommendStudy(
-                            "리액트", "타이틀", "서브타이틀", 3, index));
-                        items.add(RecommendStudy(
-                            "리액트", "타이틀", "서브타이틀", 3, index));
-                        items.add(RecommendStudy(
-                            "리액트", "타이틀", "서브타이틀", 3, index));
+                        List<RecommendStudy> items = List<RecommendStudy>();
+                        items.add(
+                            RecommendStudy("리액트", "타이틀", "서브타이틀", 3, index));
+                        items.add(
+                            RecommendStudy("리액트", "타이틀", "서브타이틀", 3, index));
+                        items.add(
+                            RecommendStudy("리액트", "타이틀", "서브타이틀", 3, index));
                         blocStudy.addAllBestStudy(items);
                         return Text("없다");
                       }
-                    }
-                );
+                    });
               }),
         ),
         Container(
@@ -259,7 +290,8 @@ class _MainPage extends State<MainPage> {
           color: Color.fromRGBO(243, 102, 34, 1),
           height: 24,
           child: Text("BEST 5 ∙ React Study",
-              style: TextStyle(color: Colors.white,
+              style: TextStyle(
+                  color: Colors.white,
                   fontSize: 12,
                   fontWeight: FontWeight.w400)),
         ),
@@ -332,26 +364,25 @@ class _MainPage extends State<MainPage> {
       margin: const EdgeInsets.only(top: 8, left: 28),
       child: Row(
         children: items
-            .map((item) =>
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  currentTopTap = item.title;
-                });
-              },
-              child: Container(
-                margin: const EdgeInsets.only(right: 16),
-                child: Text(item.title,
-                    style: TextStyle(
-                        fontSize: 14,
-                        decoration: (currentTopTap == item.title)
-                            ? TextDecoration.underline
-                            : TextDecoration.none,
-                        color: (currentTopTap == item.title)
-                            ? Colors.white
-                            : Color.fromRGBO(165, 165, 165, 1))),
-              ),
-            ))
+            .map((item) => GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      currentTopTap = item.title;
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 16),
+                    child: Text(item.title,
+                        style: TextStyle(
+                            fontSize: 14,
+                            decoration: (currentTopTap == item.title)
+                                ? TextDecoration.underline
+                                : TextDecoration.none,
+                            color: (currentTopTap == item.title)
+                                ? Colors.white
+                                : Color.fromRGBO(165, 165, 165, 1))),
+                  ),
+                ))
             .toList(),
       ),
     );

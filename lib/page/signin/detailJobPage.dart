@@ -1,4 +1,5 @@
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,6 +21,21 @@ class _DetailJogPage extends State<DetailJobPage> {
   bool value = false;
   int group = 1;
   List<DetailJobItem> items = [];
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  String fcmToken;
+
+  @override
+  void initState() {
+    super.initState();
+    fcmSetup();
+  }
+
+  void fcmSetup() {
+    _firebaseMessaging.getToken().then((token){
+      fcmToken = token;
+      print("토큰"+fcmToken);
+    });
+  }
 
   @override
   void dispose() {
@@ -85,9 +101,9 @@ class _DetailJogPage extends State<DetailJobPage> {
                                         leading: CircularCheckBox(
                                             value: item.getIsChecked(),
                                             activeColor:
-                                                Color.fromRGBO(243, 102, 34, 1),
+                                            Color.fromRGBO(243, 102, 34, 1),
                                             materialTapTargetSize:
-                                                MaterialTapTargetSize.padded,
+                                            MaterialTapTargetSize.padded,
                                             onChanged: (bool x) {
                                               print(item.isChecked);
                                               setState(() {
