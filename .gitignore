@@ -52,6 +52,8 @@ lib/generated_plugin_registrant.dart
 # Java class files
 *.class
 
+config.dart
+
 # Generated files
 bin/
 gen/
@@ -424,5 +426,8 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+
+
+**/lib/config.dart
 
 # End of https://www.gitignore.io/api/dart,swift,xcode,kotlin,flutter,android,androidstudio
