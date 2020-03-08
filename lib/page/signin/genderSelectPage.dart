@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:join/common/ui.dart';
 import 'package:join/const/strings.dart';
 
 import 'jobPage.dart';
 
 class GenderSelectPage extends StatefulWidget {
+  final GenderSelectArguments arguments;
+
+  GenderSelectPage(this.arguments);
   @override
   State<StatefulWidget> createState() => _GenderSelectPage();
 }
@@ -16,6 +20,7 @@ class _GenderSelectPage extends State<GenderSelectPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.arguments.googleSignInAccount.email);
     return Theme(
       data: ThemeData.dark(),
       child: Scaffold(
@@ -45,7 +50,7 @@ class _GenderSelectPage extends State<GenderSelectPage> {
                     onPressed: () {
                       Navigator.pushNamed(context, Routes.JOB,
                           arguments: JobPageArguments(
-                              (group == 1) ? "male" : "femail"));
+                              (group == 1) ? "male" : "femail",widget.arguments.googleSignInAccount));
                     },
                     icon: Image.asset("images/btn_login_disabled.png",
                         color: Colors.white),
@@ -80,4 +85,10 @@ class _GenderSelectPage extends State<GenderSelectPage> {
           },
         ));
   }
+}
+
+class GenderSelectArguments {
+  final GoogleSignInAccount googleSignInAccount;
+
+  GenderSelectArguments(this.googleSignInAccount);
 }

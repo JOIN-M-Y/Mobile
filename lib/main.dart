@@ -38,7 +38,7 @@ class JoinApp extends StatelessWidget {
         Routes.HOME: (_) => JoinMainPage(),
         Routes.SIGN_UP: (_) => SignUpEmailPage(),
         Routes.MAIN: (_) => MainPage(),
-        Routes.GENDER: (_) => GenderSelectPage(),
+        Routes.GENDER: (context) => GenderSelectPage(ModalRoute.of(context).settings.arguments),
         Routes.JOB: (context) =>
             JobPage(ModalRoute.of(context).settings.arguments),
         Routes.DETAIL_JOB: (context) =>

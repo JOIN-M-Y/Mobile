@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:join/common/ui.dart';
 import 'package:join/const/strings.dart';
 
@@ -62,7 +63,9 @@ class _JobPage extends State<JobPage> {
                           }
                           Navigator.pushNamed(context, Routes.DETAIL_JOB,
                               arguments: DetailJobPageArguments(
-                                  widget.arguments.gender, position));
+                                  widget.arguments.gender,
+                                  position,
+                                  widget.arguments.googleSignInAccount));
                         },
                         icon: Image.asset("images/btn_login_disabled.png",
                             color: Colors.white),
@@ -101,6 +104,7 @@ class _JobPage extends State<JobPage> {
 
 class JobPageArguments {
   final String gender;
+  final GoogleSignInAccount googleSignInAccount;
 
-  JobPageArguments(this.gender);
+  JobPageArguments(this.gender, this.googleSignInAccount);
 }

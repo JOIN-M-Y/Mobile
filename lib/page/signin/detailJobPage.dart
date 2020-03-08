@@ -1,6 +1,7 @@
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:join/common/ui.dart';
 import 'package:join/const/strings.dart';
 
@@ -171,6 +172,7 @@ class DetailJobItem {
 class DetailJobPageArguments {
   final String gender;
   final String position;
+  final GoogleSignInAccount googleSignInAccount;
 
-  DetailJobPageArguments(this.gender, this.position);
+  DetailJobPageArguments(this.gender, this.position, this.googleSignInAccount);
 }
