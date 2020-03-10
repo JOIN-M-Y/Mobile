@@ -16,6 +16,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   @override
+  void dispose() {
+    userBloc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,

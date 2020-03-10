@@ -3,8 +3,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:join/blocs/user_bloc.dart';
 import 'package:join/common/ui.dart';
 import 'package:join/const/strings.dart';
+import 'package:join/custom/join_dialog.dart';
+import 'package:join/model/account_model.dart';
+import 'package:join/page/mainPage.dart';
+import 'package:loading_animations/loading_animations.dart';
 
 class DetailJobPage extends StatefulWidget {
   final DetailJobPageArguments arguments;
@@ -31,16 +36,27 @@ class _DetailJogPage extends State<DetailJobPage> {
   }
 
   void fcmSetup() {
-    _firebaseMessaging.getToken().then((token){
+    _firebaseMessaging.getToken().then((token) {
       fcmToken = token;
-      print("토큰"+fcmToken);
+      print("토큰" + fcmToken);
     });
   }
 
   @override
   void dispose() {
     items.clear();
+    userBloc.dispose();
     super.dispose();
+  }
+
+  void signUp(List<String> items) {
+    String email = widget.arguments.googleSignInAccount.email;
+    String socialId = widget.arguments.googleSignInAccount.id;
+    String position = widget.arguments.position;
+    String gender = widget.arguments.gender;
+
+    userBloc.signUphUser(
+        email, fcmToken, gender, position, items, "gmail", socialId,context);
   }
 
   @override
@@ -85,55 +101,82 @@ class _DetailJogPage extends State<DetailJobPage> {
                         margin: const EdgeInsets.only(top: 17),
                         child: topDescription(
                             "관심분야 선택", "추천스터디를 위하여 필요합니다.\n자신의 직업을 선택해주세요")),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            Column(
-                              children: items.map((item) {
-                                return Column(
-                                  children: <Widget>[
-                                    ListTile(
-                                        title: Text(item.title,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18)),
-                                        leading: CircularCheckBox(
-                                            value: item.getIsChecked(),
-                                            activeColor:
-                                            Color.fromRGBO(243, 102, 34, 1),
-                                            materialTapTargetSize:
-                                            MaterialTapTargetSize.padded,
-                                            onChanged: (bool x) {
-                                              print(item.isChecked);
-                                              setState(() {
-                                                item.setIsChecked(x);
+                    StreamBuilder<AccountModel>(
+                        stream: userBloc.userInfo,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            Navigator.of(context).pushNamed(Routes.MAIN);
+                          }
+                          return Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: <Widget>[
+                                  Column(
+                                    children: items.map((item) {
+                                      return Column(
+                                        children: <Widget>[
+                                          ListTile(
+                                              title: Text(item.title,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18)),
+                                              leading: CircularCheckBox(
+                                                  value: item.getIsChecked(),
+                                                  activeColor: Color.fromRGBO(
+                                                      243, 102, 34, 1),
+                                                  materialTapTargetSize:
+                                                      MaterialTapTargetSize
+                                                          .padded,
+                                                  onChanged: (bool x) {
+                                                    print(item.isChecked);
+                                                    setState(() {
+                                                      item.setIsChecked(x);
+                                                    });
+                                                  })),
+                                          division()
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        top: 32, right: 28),
+                                    alignment: Alignment.centerRight,
+                                    child: IconButton(
+                                      color: Colors.white,
+                                      iconSize: 52,
+                                      onPressed: () {
+                                        List<String> newItems = [];
+                                        items.forEach((value) {
+                                          if (value.getIsChecked()) {
+                                            newItems.add(value.title);
+                                          }
+                                        });
+                                        if (newItems.isEmpty) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return JoinDialog(
+                                                  title: "선택",
+                                                  content:
+                                                      "관심분야를 하나 이상 선택해주세요."
+                                                );
                                               });
-                                            })),
-                                    division()
-                                  ],
-                                );
-                              }).toList(),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 32, right: 28),
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                color: Colors.white,
-                                iconSize: 52,
-                                onPressed: () {
-                                  Navigator.pushNamed(context, Routes.MAIN);
-                                },
-                                icon: Image.asset(
-                                    "images/btn_login_disabled.png",
-                                    color: Colors.white),
-                                enableFeedback: false,
+                                        } else {
+                                          signUp(newItems);
+                                        }
+                                      },
+                                      icon: Image.asset(
+                                          "images/btn_login_disabled.png",
+                                          color: Colors.white),
+                                      enableFeedback: false,
+                                    ),
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                            ),
+                          );
+                        }),
                   ])),
         ),
       ),

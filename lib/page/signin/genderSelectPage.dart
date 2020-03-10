@@ -50,7 +50,7 @@ class _GenderSelectPage extends State<GenderSelectPage> {
                     onPressed: () {
                       Navigator.pushNamed(context, Routes.JOB,
                           arguments: JobPageArguments(
-                              (group == 1) ? "male" : "femail",widget.arguments.googleSignInAccount));
+                              (group == 1) ? "male" : "female",widget.arguments.googleSignInAccount));
                     },
                     icon: Image.asset("images/btn_login_disabled.png",
                         color: Colors.white),
