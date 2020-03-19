@@ -56,7 +56,7 @@ class _DetailJogPage extends State<DetailJobPage> {
     String gender = widget.arguments.gender;
 
     userBloc.signUphUser(
-        email, fcmToken, gender, position, items, "gmail", socialId,context);
+        email, fcmToken, gender, position, items, "gmail", socialId, context);
   }
 
   @override
@@ -104,8 +104,8 @@ class _DetailJogPage extends State<DetailJobPage> {
                     StreamBuilder<AccountModel>(
                         stream: userBloc.userInfo,
                         builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            Navigator.of(context).pushNamed(Routes.MAIN);
+                          if (snapshot.hasData && !snapshot.hasError) {
+                            Navigator.of(context).popUntil(ModalRoute.withName(Routes.MAIN));
                           }
                           return Expanded(
                             child: SingleChildScrollView(
@@ -157,10 +157,9 @@ class _DetailJogPage extends State<DetailJobPage> {
                                               context: context,
                                               builder: (context) {
                                                 return JoinDialog(
-                                                  title: "선택",
-                                                  content:
-                                                      "관심분야를 하나 이상 선택해주세요."
-                                                );
+                                                    title: "선택",
+                                                    content:
+                                                        "관심분야를 하나 이상 선택해주세요.");
                                               });
                                         } else {
                                           signUp(newItems);

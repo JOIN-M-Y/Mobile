@@ -12,4 +12,5 @@ class Routes {
   static const String GENDER = "/signUp/gender";
   static const String JOB = "/job";
   static const String DETAIL_JOB = "/job/detail";
+  static const String CREATE_STUDY = "/study/create";
 }

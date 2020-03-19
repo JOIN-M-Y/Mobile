@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:join/blocs/recommend_bloc.dart';
 import 'package:join/common/ui.dart';
+import 'package:join/const/strings.dart';
 import 'package:join/page/tab_profile/profilePage.dart';
 import 'package:join/page/tab_study/bestStudyPage.dart';
 import 'package:join/page/tab_study/newStudyPage.dart';
@@ -69,6 +70,13 @@ class _MainPage extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromRGBO(243, 102, 34, 1),
+        onPressed: () {
+          Navigator.pushNamed(context, Routes.CREATE_STUDY);
+        },
+        child: Icon(Icons.edit),
+      ),
       backgroundColor: Color.fromRGBO(28, 27, 38, 2),
       body: SafeArea(
         child: SizedBox.expand(

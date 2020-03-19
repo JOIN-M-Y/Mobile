@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:join/blocs/google_auth_bloc.dart';
@@ -100,7 +101,7 @@ class _LoginPage extends State<LoginPage> {
             moveGenderPager(() {
               userBloc.isSignUpUser(snapshot.data).then((value) {
                 if (value.accessToken.isNotEmpty) {
-                  Navigator.pushNamed(context, Routes.MAIN);
+                  Navigator.pushReplacementNamed(context, Routes.MAIN);
                 } else {
                   Navigator.pushNamed(context, Routes.GENDER,
                       arguments: GenderSelectArguments(snapshot.data));

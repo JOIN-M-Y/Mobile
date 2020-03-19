@@ -38,25 +38,25 @@ class UserRepository {
       String socialId,
       BuildContext context) async {
     try {
-    print(email);
-    print(fcmToken);
-    print(gender);
-    print(position);
-    print(interestList);
-    print(provider);
-    print(socialId);
-      final response =
-          await addInterceptors(dio).post("/accounts", data: {
-            "email": email,
-            "fcmToken":fcmToken,
-            "gender":gender,
-            "interestedField":position,
-            "interestedFieldDetail":interestList,
-            "provider":provider,
-            "socialId":socialId,
-          });
+      print(email);
+      print(fcmToken);
+      print(gender);
+      print(position);
+      print(interestList);
+      print(provider);
+      print(socialId);
+      final response = await addInterceptors(dio).post("/accounts", data: {
+        "email": email,
+        "fcmToken": fcmToken,
+        "gender": gender,
+        "interestedField": position,
+        "interestedFieldDetail": interestList,
+        "provider": provider,
+        "socialId": socialId,
+      });
       return AccountModel.fromJson(Map<String, dynamic>.from(response.data));
     } catch (e) {
+      print(e);
       showDialog(
           context: context,
           builder: (context) {

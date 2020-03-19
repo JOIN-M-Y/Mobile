@@ -10,6 +10,7 @@ import 'package:join/page/signin/jobPage.dart';
 import 'package:join/page/joinMainPage.dart';
 import 'package:join/page/loginPage.dart';
 import 'package:join/page/mainPage.dart';
+import 'package:join/page/tab_study/createStudyPafe.dart';
 
 import 'const/strings.dart';
 import 'page/signUpEmailPage.dart';
@@ -47,6 +48,7 @@ class JoinApp extends StatelessWidget {
             JobPage(ModalRoute.of(context).settings.arguments),
         Routes.DETAIL_JOB: (context) =>
             DetailJobPage(ModalRoute.of(context).settings.arguments),
+        Routes.CREATE_STUDY :(context) => CreateStudy()
       },
     );
   }
