@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:join/custom/join_dialog.dart';
 import 'package:join/model/account_model.dart';
 import 'package:join/network/baseDio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
   Dio dio = createDio();
@@ -21,7 +22,10 @@ class UserRepository {
 
       final response =
           await addInterceptors(dio).get("/accounts", queryParameters: param);
-      return AccountModel.fromJson(Map<String, dynamic>.from(response.data));
+      AccountModel model = AccountModel.fromJson(Map<String, dynamic>.from(response.data));
+      SharedPreferences shard = await SharedPreferences.getInstance();
+      shard.setString("accessToken", model.accessToken);
+      return model;
     } catch (e) {
       print(e.toString());
       return null;

@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:join/common/ui.dart';
+import 'package:join/network/baseDio.dart';
+import 'package:nepali_date_picker/nepali_date_picker.dart';
 
 class CreateStudy extends StatefulWidget {
   @override
@@ -11,7 +14,15 @@ class _CreateStudy extends State<CreateStudy> {
   bool value = false;
   int secretGroup = 1;
   int categoryGroup = 2;
-
+  String _dateTime = "DD/MM/YYYY";
+  Dio dio = createDio();
+  
+  @override
+  void initState() {
+    super.initState();
+    getAddress();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +55,7 @@ class _CreateStudy extends State<CreateStudy> {
                     SizedBox(height: 8),
                     studySecretSetting(),
                     SizedBox(height: 8),
-                    studySeccretSettingDescription(),
+                    studySecretSettingDescription(),
                     SizedBox(height: 28),
                     studyAreaText(),
                     SizedBox(height: 8),
@@ -116,6 +127,16 @@ class _CreateStudy extends State<CreateStudy> {
       style: TextStyle(
           color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold));
 
+  Future<List<String>> getAddress() async{
+    try {
+      final response = await addInterceptors(dio).get("/address");
+      print(response);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+  
   Widget studyArea() {
     return Row(
       children: <Widget>[
@@ -170,7 +191,7 @@ class _CreateStudy extends State<CreateStudy> {
       style: TextStyle(
           color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold));
 
-  Widget studySeccretSettingDescription() =>
+  Widget studySecretSettingDescription() =>
       Text("※비공개일 경우, 방장이 링크/카카오톡 공유를 전달한상대만 \n초대가능니다.",
           style: TextStyle(color: Colors.white, fontSize: 12));
 
@@ -216,22 +237,45 @@ class _CreateStudy extends State<CreateStudy> {
             color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold));
   }
 
+  Future selectDate() async {
+    DateTime picked = await showDatePicker(
+      context: context,
+      locale: const Locale('ko', 'KO'),
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.dark(),
+          child: child,
+        );
+      },
+    );
+    if (picked != null) setState(() => _dateTime = picked.toString().substring(0,10));
+  }
+
   Widget studySchedule() {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-          border: Border.all(color: Color.fromRGBO(47, 55, 51, 1))),
-      child: Padding(
-        padding:
-            const EdgeInsets.only(top: 11, bottom: 11, left: 12, right: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text("DD/MM/YYYY",
-                style: TextStyle(
-                    fontSize: 13, color: Color.fromRGBO(141, 140, 143, 1))),
-            Icon(Icons.calendar_today, color: Color.fromRGBO(141, 140, 143, 1))
-          ],
+    return GestureDetector(
+      onTap: () {
+        selectDate();
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 8),
+        decoration: BoxDecoration(
+            border: Border.all(color: Color.fromRGBO(47, 55, 51, 1))),
+        child: Padding(
+          padding:
+              const EdgeInsets.only(top: 11, bottom: 11, left: 12, right: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(_dateTime,
+                  style: TextStyle(
+                      fontSize: 13, color: Color.fromRGBO(141, 140, 143, 1))),
+              Icon(Icons.calendar_today,
+                  color: Color.fromRGBO(141, 140, 143, 1))
+            ],
+          ),
         ),
       ),
     );

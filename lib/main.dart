@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:join/page/signin/detailJobPage.dart';
 import 'package:join/page/signin/genderSelectPage.dart';
 import 'package:join/page/signin/jobPage.dart';
@@ -28,6 +29,14 @@ class JoinApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', 'US'),
+        const Locale('ko', 'KO'),
+      ],
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -48,7 +57,7 @@ class JoinApp extends StatelessWidget {
             JobPage(ModalRoute.of(context).settings.arguments),
         Routes.DETAIL_JOB: (context) =>
             DetailJobPage(ModalRoute.of(context).settings.arguments),
-        Routes.CREATE_STUDY :(context) => CreateStudy()
+        Routes.CREATE_STUDY: (context) => CreateStudy()
       },
     );
   }
