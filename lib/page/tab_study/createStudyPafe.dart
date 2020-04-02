@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:join/common/ui.dart';
+import 'package:join/model/address_model.dart';
 import 'package:join/network/baseDio.dart';
 import 'package:nepali_date_picker/nepali_date_picker.dart';
 
@@ -16,13 +20,20 @@ class _CreateStudy extends State<CreateStudy> {
   int categoryGroup = 2;
   String _dateTime = "DD/MM/YYYY";
   Dio dio = createDio();
-  
+  var firstAddressList = [];
+  var secondAddressList = [];
+
+  String firstAddress = "도";
+  String secondAddress = "시";
+
+  int recruitCount = 0;
+
   @override
   void initState() {
     super.initState();
     getAddress();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +70,7 @@ class _CreateStudy extends State<CreateStudy> {
                     SizedBox(height: 28),
                     studyAreaText(),
                     SizedBox(height: 8),
-                    studyArea(),
+                    studyArea(context),
                     SizedBox(height: 28),
                     studyCategoryText(),
                     studyCategory()
@@ -127,17 +138,48 @@ class _CreateStudy extends State<CreateStudy> {
       style: TextStyle(
           color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold));
 
-  Future<List<String>> getAddress() async{
+  Future<Address> getAddress() async {
     try {
       final response = await addInterceptors(dio).get("/address");
-      print(response);
+      Address name = Address.fromJson(response.data);
+      setState(() {
+        firstAddressList.clear();
+        firstAddressList.addAll(name.address);
+      });
+      name.address.forEach((f) {
+        print(f);
+      });
+      return Address.fromJson(response.data);
     } catch (e) {
       print(e);
       return null;
     }
   }
-  
-  Widget studyArea() {
+
+  bool isLoading = false;
+
+  Future<Address> getSecondAddress(String address) async {
+    try {
+      isLoading = true;
+      final response = await addInterceptors(dio)
+          .get("/address/${Uri.encodeComponent(address)}");
+      Address name = Address.fromJson(response.data);
+      setState(() {
+        secondAddressList.clear();
+        secondAddressList.addAll(name.address);
+      });
+      isLoading = false;
+      name.address.forEach((f) {
+        print(f);
+      });
+      return Address.fromJson(response.data);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Widget studyArea(BuildContext context) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -151,10 +193,15 @@ class _CreateStudy extends State<CreateStudy> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text("도",
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Color.fromRGBO(141, 140, 143, 1))),
+                  GestureDetector(
+                    onTap: () {
+                      _showFirstAddressBottomSheet(context);
+                    },
+                    child: Text(firstAddress,
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: Color.fromRGBO(141, 140, 143, 1))),
+                  ),
                   Icon(Icons.arrow_drop_down, color: Colors.white)
                 ],
               ),
@@ -167,24 +214,92 @@ class _CreateStudy extends State<CreateStudy> {
           child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Color.fromRGBO(47, 51, 55, 1))),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 12, right: 12, top: 10, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("시",
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Color.fromRGBO(141, 140, 143, 1))),
-                  Icon(Icons.arrow_drop_down, color: Colors.white)
-                ],
+            child: GestureDetector(
+              onTap: () {
+                if (secondAddressList.isEmpty) {
+                  Fluttertoast.showToast(
+                      msg: "지역을 먼저 선택해주세요.",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                } else {
+                  _showSecondAddressBottomSheet(context);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 12, right: 12, top: 10, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(secondAddress,
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: Color.fromRGBO(141, 140, 143, 1))),
+                    Icon(Icons.arrow_drop_down, color: Colors.white)
+                  ],
+                ),
               ),
             ),
           ),
         )
       ],
     );
+  }
+
+  void _showFirstAddressBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return ListView.builder(
+              padding: EdgeInsets.all(10),
+              itemCount: firstAddressList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      getSecondAddress(firstAddressList[index]);
+                      setState(() {
+                        firstAddress = firstAddressList[index];
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(firstAddressList[index],
+                          style: TextStyle(fontSize: 20)),
+                    ));
+              });
+        });
+  }
+
+  void _showSecondAddressBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          if (isLoading) {
+            return CircularProgressIndicator();
+          } else {
+            return ListView.builder(
+                padding: EdgeInsets.all(10),
+                itemCount: secondAddressList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() {
+                          secondAddress = secondAddressList[index];
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(secondAddressList[index],
+                            style: TextStyle(fontSize: 20)),
+                      ));
+                });
+          }
+        });
   }
 
   Widget studyAreaText() => Text("지역",
@@ -251,7 +366,8 @@ class _CreateStudy extends State<CreateStudy> {
         );
       },
     );
-    if (picked != null) setState(() => _dateTime = picked.toString().substring(0,10));
+    if (picked != null)
+      setState(() => _dateTime = picked.toString().substring(0, 10));
   }
 
   Widget studySchedule() {
@@ -271,7 +387,10 @@ class _CreateStudy extends State<CreateStudy> {
             children: <Widget>[
               Text(_dateTime,
                   style: TextStyle(
-                      fontSize: 13, color: Color.fromRGBO(141, 140, 143, 1))),
+                      fontSize: 13,
+                      color: (_dateTime == "DD/MM/YYYY")
+                          ? Color.fromRGBO(141, 140, 143, 1)
+                          : Colors.white)),
               Icon(Icons.calendar_today,
                   color: Color.fromRGBO(141, 140, 143, 1))
             ],
@@ -291,7 +410,17 @@ class _CreateStudy extends State<CreateStudy> {
     return Row(
       children: <Widget>[
         InkWell(
-          child: Icon(Icons.remove, color: Color.fromRGBO(47, 55, 51, 1)),
+          onTap: () {
+            if (recruitCount > 0) {
+              setState(() {
+                --recruitCount;
+              });
+            }
+          },
+          child: Icon(Icons.remove,
+              color: (recruitCount > 0)
+                  ? Colors.white
+                  : Color.fromRGBO(47, 55, 51, 1)),
         ),
         SizedBox(width: 12),
         Container(
@@ -300,12 +429,20 @@ class _CreateStudy extends State<CreateStudy> {
           alignment: Alignment.center,
           width: 48,
           height: 40,
-          child: Text("0",
+          child: Text("$recruitCount",
               style: TextStyle(
-                  color: Color.fromRGBO(141, 140, 143, 1), fontSize: 15)),
+                  color: (recruitCount > 0)
+                      ? Colors.white
+                      : Color.fromRGBO(141, 140, 143, 1),
+                  fontSize: 15)),
         ),
         SizedBox(width: 12),
         InkWell(
+          onTap: () {
+            setState(() {
+              recruitCount++;
+            });
+          },
           child: Icon(Icons.add, color: Colors.white),
         ),
       ],
