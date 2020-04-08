@@ -11,7 +11,7 @@ import 'package:join/page/signin/jobPage.dart';
 import 'package:join/page/joinMainPage.dart';
 import 'package:join/page/loginPage.dart';
 import 'package:join/page/mainPage.dart';
-import 'package:join/page/tab_study/createStudyPafe.dart';
+import 'package:join/page/tab_study/createStudyPage.dart';
 
 import 'const/strings.dart';
 import 'page/signUpEmailPage.dart';

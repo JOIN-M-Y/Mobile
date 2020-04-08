@@ -17,16 +17,21 @@ class CreateStudy extends StatefulWidget {
 class _CreateStudy extends State<CreateStudy> {
   bool value = false;
   int secretGroup = 1;
-  int categoryGroup = 2;
+  int categoryGroup = 1;
   String _dateTime = "DD/MM/YYYY";
   Dio dio = createDio();
   var firstAddressList = [];
   var secondAddressList = [];
-
   String firstAddress = "도";
-  String secondAddress = "시";
 
+  String secondAddress = "시";
   int recruitCount = 0;
+
+  String _interestStudyType = "스터디 상세 카테고리를 선택해주세요";
+  var devStudy = ["웹 개발","서버 개발","모바일 개발","데이터사이언스","게임 개발","IoT 개발"];
+  var designStudy = ["BX 디자인","UX/UI 디자인","영상 디자인","3D 디자인","일러스트레이터"];
+  var planningStudy = ["GA 기획","UX 기획","역 기획","3D 디자인","마케팅 기획"];
+
 
   @override
   void initState() {
@@ -73,7 +78,13 @@ class _CreateStudy extends State<CreateStudy> {
                     studyArea(context),
                     SizedBox(height: 28),
                     studyCategoryText(),
-                    studyCategory()
+                    SizedBox(height: 11),
+                    studyCategory(),
+                    SizedBox(height: 29),
+                    interestStudyTypeText(),
+                    SizedBox(height: 9),
+                    interestStudyType(),
+                    SizedBox(height: 40)
                   ],
                 ),
               ),
@@ -84,6 +95,76 @@ class _CreateStudy extends State<CreateStudy> {
       )),
     );
   }
+
+  void selectInterestStudyType(){
+    var currentStudyItems = [];
+    switch(categoryGroup){
+      case 1 :
+        currentStudyItems = planningStudy;
+        break;
+      case 2:
+        currentStudyItems = designStudy;
+        break;
+      case 3:
+        currentStudyItems = devStudy;
+        break;
+    }
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return ListView.builder(
+              padding: EdgeInsets.all(10),
+              itemCount: currentStudyItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      setState(() {
+                        _interestStudyType = currentStudyItems[index];
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(currentStudyItems[index],
+                          style: TextStyle(fontSize: 20)),
+                    ));
+              });
+        });
+  }
+
+  Widget interestStudyType(){
+    return GestureDetector(
+      onTap: () {
+        selectInterestStudyType();
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 8),
+        decoration: BoxDecoration(
+            border: Border.all(color: Color.fromRGBO(47, 55, 51, 1))),
+        child: Padding(
+          padding:
+          const EdgeInsets.only(top: 11, bottom: 11, left: 12, right: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(_interestStudyType,
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: (_interestStudyType == "스터디 상세 카테고리를 선택해주세요")
+                          ? Color.fromRGBO(141, 140, 143, 1)
+                          : Colors.white)),
+              Icon(Icons.arrow_drop_down,
+                  color: Color.fromRGBO(141, 140, 143, 1))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget interestStudyTypeText() => Text("관심 분야 선택",
+      style: TextStyle(
+          color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold));
 
   Widget studyCategory() {
     return Theme(
@@ -184,26 +265,26 @@ class _CreateStudy extends State<CreateStudy> {
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Color.fromRGBO(47, 51, 55, 1))),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 12, right: 12, top: 10, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      _showFirstAddressBottomSheet(context);
-                    },
-                    child: Text(firstAddress,
+          child: GestureDetector(
+            onTap: () {
+              _showFirstAddressBottomSheet(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromRGBO(47, 51, 55, 1))),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 12, right: 12, top: 10, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(firstAddress,
                         style: TextStyle(
                             fontSize: 13,
                             color: Color.fromRGBO(141, 140, 143, 1))),
-                  ),
-                  Icon(Icons.arrow_drop_down, color: Colors.white)
-                ],
+                    Icon(Icons.arrow_drop_down, color: Colors.white)
+                  ],
+                ),
               ),
             ),
           ),
@@ -211,23 +292,23 @@ class _CreateStudy extends State<CreateStudy> {
         SizedBox(width: 13),
         Expanded(
           flex: 1,
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Color.fromRGBO(47, 51, 55, 1))),
-            child: GestureDetector(
-              onTap: () {
-                if (secondAddressList.isEmpty) {
-                  Fluttertoast.showToast(
-                      msg: "지역을 먼저 선택해주세요.",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
-                } else {
-                  _showSecondAddressBottomSheet(context);
-                }
-              },
+          child: GestureDetector(
+            onTap: () {
+              if (secondAddressList.isEmpty) {
+                Fluttertoast.showToast(
+                    msg: "지역을 먼저 선택해주세요.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              } else {
+                _showSecondAddressBottomSheet(context);
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromRGBO(47, 51, 55, 1))),
               child: Padding(
                 padding: const EdgeInsets.only(
                     left: 12, right: 12, top: 10, bottom: 10),
@@ -517,6 +598,7 @@ class _CreateStudy extends State<CreateStudy> {
               primaryColor: Color.fromRGBO(47, 55, 51, 1),
               hintColor: Colors.yellow),
           child: TextFormField(
+            style: TextStyle(fontSize: 13,color: Colors.white),
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
                 isDense: true,
@@ -551,7 +633,7 @@ class _CreateStudy extends State<CreateStudy> {
           ),
           SizedBox(width: 4),
           Text(
-            "(0/20)",
+            "(0/200)",
             style: TextStyle(
                 color: Color.fromRGBO(177, 177, 177, 1), fontSize: 13),
           ),
@@ -569,6 +651,7 @@ class _CreateStudy extends State<CreateStudy> {
             primaryColor: Color.fromRGBO(47, 55, 51, 1),
             hintColor: Colors.yellow),
         child: TextField(
+          style: TextStyle(fontSize: 13,color: Colors.white),
           expands: true,
           maxLines: null,
           maxLength: 200,
